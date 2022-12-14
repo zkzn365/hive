@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { NavLink, useParams, useSearchParams } from 'react-router-dom';
@@ -10,7 +12,6 @@ import {
   Pagination,
   FormatTime,
   Empty,
-  BaseUserCard,
   QueryGroup,
 } from '@/components';
 import { useQuestionList } from '@/services';
@@ -28,22 +29,12 @@ interface Props {
 }
 
 const QuestionLastUpdate = ({ q }) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'question' });
+  // const { t } = useTranslation('translation', { keyPrefix: 'question' });
   if (q.update_time > q.edit_time) {
     // question answered
     return (
       <div className="d-flex">
-        <BaseUserCard
-          data={q.last_answered_user_info}
-          showAvatar={false}
-          className="me-1"
-        />
-        •
-        <FormatTime
-          time={q.update_time}
-          className="text-secondary ms-1"
-          preFix={t('answered')}
-        />
+        <FormatTime time={q.update_time} className="text-secondary ms-1" />
       </div>
     );
   }
@@ -52,17 +43,7 @@ const QuestionLastUpdate = ({ q }) => {
     // question modified
     return (
       <div className="d-flex">
-        <BaseUserCard
-          data={q.update_user_info}
-          showAvatar={false}
-          className="me-1"
-        />
-        •
-        <FormatTime
-          time={q.edit_time}
-          className="text-secondary ms-1"
-          preFix={t('modified')}
-        />
+        <FormatTime time={q.edit_time} className="text-secondary ms-1" />
       </div>
     );
   }
@@ -70,13 +51,7 @@ const QuestionLastUpdate = ({ q }) => {
   // default: asked
   return (
     <div className="d-flex">
-      <BaseUserCard data={q.user_info} showAvatar={false} className="me-1" />
-      •
-      <FormatTime
-        time={q.create_time}
-        preFix={t('asked')}
-        className="text-secondary ms-1"
-      />
+      <FormatTime time={q.create_time} className="text-secondary ms-1" />
     </div>
   );
 };
@@ -167,6 +142,72 @@ const QuestionList: FC<Props> = ({ source }) => {
           );
         })}
       </ListGroup>
+
+      <div className="bg-white py-6 sm:py-8 lg:py-12">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {listData?.list?.map((ret) => {
+              return (
+                <div>
+                  <div className="flex flex-col border rounded-lg p-3 md:p-3">
+                    <h3 className="text-lg md:text-xl font-semibold mb-2">
+                      {ret.title}
+                    </h3>
+                    <p className="text-gray-500 mb-2">{ret.description}</p>
+                    <div className="d-flex flex-column flex-md-row align-items-md-center fs-14 text-secondary mb-2">
+                      <QuestionLastUpdate q={ret} />
+                      <div className="ms-0 ms-md-3 mt-2 mt-md-0">
+                        <span>
+                          <Icon name="hand-thumbs-up-fill" />
+                          <em className="fst-normal ms-1">{ret.vote_count}</em>
+                        </span>
+                        <span
+                          className={`ms-3 ${
+                            ret.accepted_answer_id >= 1 ? 'text-success' : ''
+                          }`}>
+                          <Icon
+                            name={
+                              ret.accepted_answer_id >= 1
+                                ? 'check-circle-fill'
+                                : 'chat-square-text-fill'
+                            }
+                          />
+                          <em className="fst-normal ms-1">
+                            {ret.answer_count}
+                          </em>
+                        </span>
+                        <span className="summary-stat ms-3">
+                          <Icon name="eye-fill" />
+                          <em className="fst-normal ms-1">{ret.view_count}</em>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="question-tags mx-n1 mb-2">
+                      {Array.isArray(ret.tags)
+                        ? ret.tags.map((tag) => {
+                            return (
+                              <Tag
+                                key={tag.slug_name}
+                                className="m-1"
+                                data={tag}
+                              />
+                            );
+                          })
+                        : null}
+                    </div>
+                    <NavLink
+                      to={`/questions/${ret.id}`}
+                      className="text-indigo-500 hover:text-indigo-600 active:text-indigo-700 font-bold transition duration-100 mt-auto">
+                      More
+                    </NavLink>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {count <= 0 && !isLoading && <Empty />}
       <div className="mt-4 mb-2 d-flex justify-content-center">
         <Pagination

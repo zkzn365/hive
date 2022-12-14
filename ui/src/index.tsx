@@ -7,6 +7,7 @@ import { guard } from '@/utils';
 import App from './App';
 
 import './index.scss';
+import './index.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
