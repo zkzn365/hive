@@ -1,0 +1,40 @@
+.tag-selector-wrap {
+  .btn {
+    &.warning {
+      -webkit-animation: tag-input-warning 2s;
+      animation: tag-input-warning 2s;
+    }
+  }
+  .dropdown-menu {
+    min-width: 15rem;
+  }
+  .dropdown-toggle {
+    &::after {
+      display: none;
+    }
+  }
+
+  .dropdown-item.active {
+    color: #212529;
+    background-color: #e9ecef;
+  }
+  @-webkit-keyframes tag-input-warning {
+    0% {
+      background-color: #ffc107;
+    }
+
+    100% {
+      background-color: #f8f9fa;
+    }
+  }
+
+  @keyframes tag-input-warning {
+    0% {
+      background-color: #ffc107;
+    }
+
+    100% {
+      background-color: #f8f9fa;
+    }
+  }
+}
